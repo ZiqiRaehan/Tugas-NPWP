@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     unoptimized: true, // ✅ biar next/image tetap jalan di hosting biasa (tanpa server)
   },
   
- 
+  basePath: "/prod",
+  assetPrefix: "/prod/",
 };
 
 export default nextConfig;
