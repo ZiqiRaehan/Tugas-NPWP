@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export", // ✅ wajib untuk static export
+  images: {
+    unoptimized: true, // ✅ biar next/image tetap jalan di hosting biasa (tanpa server)
+  },
 };
 
 export default nextConfig;
