@@ -1,8 +1,8 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { API_BASE_URL } from "@/config/api";
 import "./RegisterForm.css";
 
 export default function RegisterForm() {
@@ -11,16 +11,15 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [language, setLanguage] = useState<"id" | "en">("id");
-  const [captchaInput, setCaptchaInput] = useState("");
-  const [captchaCode, setCaptchaCode] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
-  const [selectedKategori, setSelectedKategori] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   // API Base URL
-  const API_BASE_URL = "https://api.mizstudio.my.id/api/auth";
+  // const API_BASE_URL = "https://api.mizstudio.my.id/api/auth";
 
   // Translations
   const translations = {
@@ -41,7 +40,6 @@ export default function RegisterForm() {
       alreadyHaveAccount: "Sudah punya akun?",
       loginLink: "Masuk di sini",
       errorPasswordMismatch: "Kata sandi tidak cocok",
-      errorCaptcha: "Kode captcha tidak valid",
       errorEmailInvalid: "Format email tidak valid",
       errorPasswordLength: "Kata sandi minimal 6 karakter",
       errorAllFields: "Semua field harus diisi",
@@ -67,7 +65,6 @@ export default function RegisterForm() {
       alreadyHaveAccount: "Already have an account?",
       loginLink: "Sign in here",
       errorPasswordMismatch: "Passwords do not match",
-      errorCaptcha: "Invalid captcha code",
       errorEmailInvalid: "Invalid email format",
       errorPasswordLength: "Password must be at least 6 characters",
       errorAllFields: "All fields are required",
@@ -80,35 +77,9 @@ export default function RegisterForm() {
 
   const t = translations[language];
 
-  // Get kategori display name
-  const getKategoriName = (kategori: string) => {
-    const kategoriNames = {
-      perorangan: language === "id" ? "Perorangan" : "Individual",
-      instansi: language === "id" ? "Instansi Pemerintah" : "Government Agency",
-      badan: language === "id" ? "Badan" : "Entity",
-      pmse: language === "id" ? "Pemungut PPN PMSE Luar Negeri" : "Foreign PMSE VAT Collector"
-    };
-    return kategoriNames[kategori as keyof typeof kategoriNames] || kategori;
-  };
 
-  // PERUBAHAN: Hapus redirect, kategori jadi opsional
-  useEffect(() => {
-    const kategori = sessionStorage.getItem("selectedKategori");
-    if (kategori) {
-      setSelectedKategori(kategori);
-    }
-    generateCaptcha();
-  }, []);
 
-  const generateCaptcha = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "";
-    for (let i = 0; i < 6; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setCaptchaCode(code);
-    setCaptchaInput("");
-  };
+
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -141,17 +112,11 @@ export default function RegisterForm() {
 
     if (password !== confirmPassword) {
       setError(t.errorPasswordMismatch);
-      generateCaptcha();
       setLoading(false);
       return;
     }
 
-    if (captchaInput.toUpperCase() !== captchaCode) {
-      setError(t.errorCaptcha);
-      generateCaptcha();
-      setLoading(false);
-      return;
-    }
+
 
     try {
       // Call register API
@@ -171,21 +136,19 @@ export default function RegisterForm() {
       if (response.ok) {
         // Store email for verification page
         sessionStorage.setItem("register_email", email);
-        
+
         // Show success message
         alert(data.message || t.successMessage);
-        
+
         // Redirect to verification page
         router.push(`/verif?email=${encodeURIComponent(email)}`);
       } else {
         // Handle error response from API
         setError(data.message || t.errorAllFields);
-        generateCaptcha();
       }
     } catch (error) {
       console.error("Registration error:", error);
       setError(t.errorNetwork);
-      generateCaptcha();
     } finally {
       setLoading(false);
     }
@@ -230,15 +193,7 @@ export default function RegisterForm() {
               <div className="form-icon">✱</div>
               <h2>{t.title}</h2>
               <p className="form-subtitle">{t.subtitle}</p>
-              {selectedKategori && (
-                <div className="selected-kategori">
-                  <span className="kategori-label">{t.selectedKategori}:</span>
-                  <span className="kategori-value">{getKategoriName(selectedKategori)}</span>
-                  <Link href="/kategoriRegister" className="change-kategori-btn">
-                    {t.changeKategori}
-                  </Link>
-                </div>
-              )}
+
             </div>
 
             {/* Email Input */}
@@ -300,32 +255,7 @@ export default function RegisterForm() {
               </div>
             </div>
 
-            {/* Captcha */}
-            <div className="form-group">
-              <label>{t.captchaLabel}</label>
-              <div className="captcha-container">
-                <div className="captcha-display">
-                  <span className="captcha-code">{captchaCode}</span>
-                  <button
-                    type="button"
-                    className="refresh-captcha"
-                    onClick={generateCaptcha}
-                    title="Refresh"
-                    disabled={loading}
-                  >
-                    🔄
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  placeholder={t.captchaPlaceholder}
-                  value={captchaInput}
-                  onChange={(e) => setCaptchaInput(e.target.value)}
-                  required
-                  disabled={loading}
-                />
-              </div>
-            </div>
+
 
             {/* Error Message */}
             {error && <div className="error-message">{error}</div>}

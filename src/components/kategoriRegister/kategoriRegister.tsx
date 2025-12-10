@@ -56,10 +56,17 @@ export default function KategoriRegister() {
   const t = translations[language];
 
   const handleKategoriSelect = (kategori: string) => {
+    // Check if feature is available (Perorangan only for now)
     if (kategori === "perorangan") {
-      // Store selected kategori and navigate to register
-      localStorage.setItem("selectedKategori", kategori);
-      router.push("/register");
+      // Store selected kategori
+      // In a real app this would likely api call or proceed to next form step
+      sessionStorage.setItem("selectedKategori", kategori);
+
+      // Simulate creating NPWP and redirecting to dashboard
+      alert(language === "id" ? "Kategori berhasil dipilih. Memulai pembuatan NPWP..." : "Category selected. Starting NPWP creation...");
+
+      // Redirect to dashboard (or next step of NPWP creation)
+      router.push("/dashboard");
     } else {
       // Show modal for other categories
       setModalMessage(t.modalMessage);
@@ -113,7 +120,7 @@ export default function KategoriRegister() {
             {/* Kategori Cards */}
             <div className="kategori-grid">
               {/* Perorangan */}
-              <div 
+              <div
                 className="kategori-card-item perorangan"
                 onClick={() => handleKategoriSelect("perorangan")}
               >
@@ -125,7 +132,7 @@ export default function KategoriRegister() {
               </div>
 
               {/* Instansi Pemerintah */}
-              <div 
+              <div
                 className="kategori-card-item instansi"
                 onClick={() => handleKategoriSelect("instansi")}
               >
@@ -137,7 +144,7 @@ export default function KategoriRegister() {
               </div>
 
               {/* Badan */}
-              <div 
+              <div
                 className="kategori-card-item badan"
                 onClick={() => handleKategoriSelect("badan")}
               >
@@ -149,7 +156,7 @@ export default function KategoriRegister() {
               </div>
 
               {/* PMSE */}
-              <div 
+              <div
                 className="kategori-card-item pmse"
                 onClick={() => handleKategoriSelect("pmse")}
               >
@@ -163,7 +170,7 @@ export default function KategoriRegister() {
 
             {/* Action Buttons */}
             <div className="kategori-actions">
-              <Link href="/login" className="back-button">
+              <Link href="/dashboard" className="back-button">
                 {t.backButton}
               </Link>
             </div>

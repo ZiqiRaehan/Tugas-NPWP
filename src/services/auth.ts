@@ -1,4 +1,4 @@
-type Json = Record<string, any>;
+type Json = Record<string, unknown>;
 
 async function call<T = Json>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -7,13 +7,14 @@ async function call<T = Json>(url: string, init?: RequestInit): Promise<T> {
     ...init,
   });
 
-  let data: any = null;
+  let data: unknown = null;
   try { data = await res.json(); } catch { /* ignore */ }
 
   if (!res.ok) {
+    const errorData = data as { message?: string; error?: string };
     const message =
-      data?.message ||
-      data?.error ||
+      errorData?.message ||
+      errorData?.error ||
       (typeof data === "string" ? data : "Terjadi kesalahan.");
     throw new Error(message);
   }

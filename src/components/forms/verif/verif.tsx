@@ -1,8 +1,9 @@
-"use client";
 
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { API_BASE_URL } from "@/config/api";
 import "./verif.css";
 
 export default function VerifForm() {
@@ -15,7 +16,7 @@ export default function VerifForm() {
   const [loading, setLoading] = useState<boolean>(false);
 
   // API Base URL
-  const API_BASE_URL = "https://api.mizstudio.my.id/api/auth";
+  // const API_BASE_URL = "https://api.mizstudio.my.id/api/auth";
 
   // Translations
   const translations = {
@@ -53,15 +54,15 @@ export default function VerifForm() {
     // Ambil email dari query parameter atau sessionStorage
     const emailFromQuery = searchParams.get("email");
     const emailFromSession = sessionStorage.getItem("register_email");
-    
+
     const userEmail = emailFromQuery || emailFromSession;
-    
+
     if (!userEmail) {
       // Jika tidak ada email, redirect ke register
       router.push("/register");
       return;
     }
-    
+
     setEmail(userEmail);
   }, [router, searchParams]);
 
@@ -94,10 +95,10 @@ export default function VerifForm() {
       if (response.ok) {
         // Clear session storage
         sessionStorage.removeItem("register_email");
-        
+
         // Show success message
         alert(data.message || t.successMessage);
-        
+
         // Redirect to login
         router.push("/login");
       } else {

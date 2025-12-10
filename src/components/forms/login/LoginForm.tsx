@@ -1,8 +1,8 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { API_BASE_URL } from "@/config/api";
 import "./LoginForm.css";
 
 export default function LoginForm() {
@@ -10,14 +10,13 @@ export default function LoginForm() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [language, setLanguage] = useState<"id" | "en">("id");
-  const [captchaInput, setCaptchaInput] = useState("");
-  const [captchaCode, setCaptchaCode] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // API Base URL
-  const API_BASE_URL = "https://api.mizstudio.my.id/api/auth";
+  // const API_BASE_URL = "https://api.mizstudio.my.id/api/auth";
 
   // Translations
   const translations = {
@@ -38,7 +37,6 @@ export default function LoginForm() {
       registerLink: "Daftar di sini",
       errorNoAccount: "Belum ada akun. Silakan register dulu.",
       errorInvalid: "NIK/Email atau kata sandi salah",
-      errorCaptcha: "Kode captcha tidak valid",
       errorServer: "Terjadi kesalahan server. Silakan coba lagi.",
       errorNetwork: "Tidak dapat terhubung ke server. Periksa koneksi internet Anda."
     },
@@ -59,7 +57,6 @@ export default function LoginForm() {
       registerLink: "Sign up here",
       errorNoAccount: "No account found. Please register first.",
       errorInvalid: "Invalid NIK/Email or password",
-      errorCaptcha: "Invalid captcha code",
       errorServer: "Server error occurred. Please try again.",
       errorNetwork: "Cannot connect to server. Check your internet connection."
     }
@@ -67,33 +64,14 @@ export default function LoginForm() {
 
   const t = translations[language];
 
-  // Generate captcha on mount
-  useEffect(() => {
-    generateCaptcha();
-  }, []);
 
-  const generateCaptcha = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "";
-    for (let i = 0; i < 6; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setCaptchaCode(code);
-    setCaptchaInput("");
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // Validate captcha
-    if (captchaInput.toUpperCase() !== captchaCode) {
-      setError(t.errorCaptcha);
-      generateCaptcha();
-      setLoading(false);
-      return;
-    }
+
 
     try {
       // Call login API
@@ -114,18 +92,16 @@ export default function LoginForm() {
         // Store token in sessionStorage (more secure than localStorage)
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("user", JSON.stringify(data));
-        
+
         // Redirect to landing page
-        router.push("/");
+        router.push("/dashboard");
       } else {
         // Handle error response from API
         setError(data.message || t.errorInvalid);
-        generateCaptcha();
       }
     } catch (error) {
       console.error("Login error:", error);
       setError(t.errorNetwork);
-      generateCaptcha();
     } finally {
       setLoading(false);
     }
@@ -208,32 +184,7 @@ export default function LoginForm() {
               </div>
             </div>
 
-            {/* Captcha */}
-            <div className="form-group">
-              <label>{t.captchaLabel}</label>
-              <div className="captcha-container">
-                <div className="captcha-display">
-                  <span className="captcha-code">{captchaCode}</span>
-                  <button
-                    type="button"
-                    className="refresh-captcha"
-                    onClick={generateCaptcha}
-                    title="Refresh"
-                    disabled={loading}
-                  >
-                    🔄
-                  </button>
-                </div>
-                <input
-                  type="text"
-                  placeholder={t.captchaPlaceholder}
-                  value={captchaInput}
-                  onChange={(e) => setCaptchaInput(e.target.value)}
-                  required
-                  disabled={loading}
-                />
-              </div>
-            </div>
+
 
             {/* Error Message */}
             {error && <div className="error-message">{error}</div>}
@@ -244,8 +195,8 @@ export default function LoginForm() {
             </div>
 
             {/* Submit Button */}
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="submit-button"
               disabled={loading}
             >
@@ -255,7 +206,7 @@ export default function LoginForm() {
             {/* Register Link */}
             <p className="register-link">
               {t.newUser}{" "}
-              <Link href="/kategoriRegister">{t.registerLink}</Link>
+              <Link href="/register">{t.registerLink}</Link>
             </p>
           </form>
         </div>

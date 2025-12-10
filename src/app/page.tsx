@@ -1,75 +1,29 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
+import Navbar from "@/components/navbar/Navbar";
 
 export default function Home() {
-  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
     const token = sessionStorage.getItem("token");
     const userData = sessionStorage.getItem("user");
-    
+
     if (token && userData) {
       setIsLoggedIn(true);
-      setUser(JSON.parse(userData));
     }
-
-    // Handle navbar scroll effect
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    setIsLoggedIn(false);
-    setUser(null);
-  };
+
 
   return (
     <div className={styles.landingContainer}>
       {/* Navigation Bar */}
-      <nav className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ""}`}>
-        <div className={styles.navContent}>
-          <div className={styles.logo}>
-            <span className={styles.logoIcon}>✱</span>
-            NPWP App
-          </div>
-          <div className={styles.navLinks}>
-            {isLoggedIn ? (
-              <div className={styles.userInfo}>
-                <span className={styles.userName}>Halo, {user?.email || user?.name}</span>
-                <Link href="/dashboard" className={styles.navButtonPrimary}>
-                  Dashboard
-                </Link>
-                <button onClick={handleLogout} className={styles.navButtonOutline}>
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <>
-                <Link href="/login" className={styles.navButtonOutline}>
-                  Masuk
-                </Link>
-                <Link href="/kategoriRegister" className={styles.navButtonPrimary}>
-                  Daftar
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <section className={styles.heroSection}>
@@ -79,7 +33,7 @@ export default function Home() {
           <div className={styles.shape2}></div>
           <div className={styles.shape3}></div>
         </div>
-        
+
         <div className={styles.heroContent}>
           <p className={styles.heroSubtitle}>Selamat Datang</p>
           <h1 className={styles.heroTitle}>
@@ -87,14 +41,14 @@ export default function Home() {
             <span className={styles.heroTitleHighlight}>Mudah & Aman</span>
           </h1>
           <p className={styles.heroDescription}>
-            Akses tugas, catatan, dan proyek Anda kapan saja, di mana saja - 
-            dan jaga semuanya tetap berjalan di satu tempat. Platform terintegrasi 
+            Akses tugas, catatan, dan proyek Anda kapan saja, di mana saja -
+            dan jaga semuanya tetap berjalan di satu tempat. Platform terintegrasi
             untuk semua kebutuhan administrasi perpajakan Anda.
           </p>
-          
+
           {!isLoggedIn ? (
             <div className={styles.heroButtons}>
-              <Link href="/kategoriRegister" className={styles.buttonPrimary}>
+              <Link href="/register" className={styles.buttonPrimary}>
                 Mulai Sekarang →
               </Link>
               <Link href="/login" className={styles.buttonSecondary}>
@@ -129,7 +83,7 @@ export default function Home() {
               Atur dan kelola semua tugas administrasi perpajakan Anda dengan mudah dan efisien dalam satu dashboard.
             </p>
           </div>
-          
+
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>📊</div>
             <h3 className={styles.featureTitle}>Pantau Proyek</h3>
@@ -137,7 +91,7 @@ export default function Home() {
               Lacak progress dan status dokumen perpajakan Anda secara real-time dengan visualisasi yang jelas.
             </p>
           </div>
-          
+
           <div className={styles.featureCard}>
             <div className={styles.featureIcon}>🔒</div>
             <h3 className={styles.featureTitle}>Aman & Terpercaya</h3>
@@ -178,7 +132,7 @@ export default function Home() {
             Bergabung sekarang dan nikmati kemudahan mengelola NPWP Anda
           </p>
           {!isLoggedIn ? (
-            <Link href="/kategoriRegister" className={styles.ctaButton}>
+            <Link href="/register" className={styles.ctaButton}>
               Daftar Gratis →
             </Link>
           ) : (
