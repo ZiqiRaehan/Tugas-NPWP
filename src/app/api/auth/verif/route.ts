@@ -1,18 +1,25 @@
 import { NextResponse } from "next/server";
+import { verifyOTP } from "@/lib/otpStore";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { email, code } = body;
 
-    if (code !== "123456") {
-      // Opsional: Untuk testing mudah, kita anggap semua kode sukses KECUALI '000000'
-      if (code === "000000") {
-        return NextResponse.json(
-          { message: "Kode verifikasi salah" },
-          { status: 400 }
-        );
-      }
+    if (!email || !code) {
+      return NextResponse.json(
+        { message: "Email dan kode verifikasi diperlukan" },
+        { status: 400 }
+      );
+    }
+
+    const isValid = verifyOTP(email, code);
+
+    if (!isValid) {
+      return NextResponse.json(
+        { message: "Kode verifikasi salah atau kadaluarsa" },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json(
@@ -20,6 +27,7 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error) {
+    console.error("Verif Error:", error);
     return NextResponse.json(
       { message: "Terjadi kesalahan server" },
       { status: 500 }

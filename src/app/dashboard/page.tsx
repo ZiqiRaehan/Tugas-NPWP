@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar/Navbar";
+import styles from "./Dashboard.module.css";
 
 export default function DashboardPage() {
   useAuth();
@@ -10,21 +11,66 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     router.push("/login");
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={styles.dashboardContainer}>
       <Navbar />
-      <div className="p-6 pt-24">
-        <h1 className="text-2xl font-bold mb-4">Selamat datang di Dashboard 🎉</h1>
-        <p>Anda berhasil login tanpa API (pakai sessionStorage).</p>
-        <button
-          onClick={handleLogout}
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
+      <div className={styles.content}>
+
+        <div className={styles.welcomeSection}>
+          <h1 className={styles.welcomeTitle}>Dashboard Overview</h1>
+          <p className={styles.welcomeSubtitle}>
+            Selamat datang! Pantau status perpajakan dan aktivitas Anda di sini.
+          </p>
+        </div>
+
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <div className={styles.statIcon}>📄</div>
+            <div className={styles.statInfo}>
+              <h3>Status Permohonan</h3>
+              <p>Sedang Diproses</p>
+            </div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statIcon}>💳</div>
+            <div className={styles.statInfo}>
+              <h3>Tagihan</h3>
+              <p>Tidak Ada Tagihan</p>
+            </div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statIcon}>📅</div>
+            <div className={styles.statInfo}>
+              <h3>Jatuh Tempo</h3>
+              <p>-</p>
+            </div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statIcon}>🔔</div>
+            <div className={styles.statInfo}>
+              <h3>Notifikasi</h3>
+              <p>2 Pesan Baru</p>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.actionSection}>
+          <div className={styles.actionContent}>
+            <h2>Kelola Akun Anda</h2>
+            <p>Pastikan data Anda selalu mutakhir untuk kemudahan administrasi. Hubungi layanan pelanggan jika Anda mengalami kendala.</p>
+            <button
+              onClick={handleLogout}
+              className={styles.logoutButton}
+            >
+              Keluar
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );

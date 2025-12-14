@@ -79,7 +79,7 @@ export default function VerifForm() {
     setLoading(true);
     try {
       // Call verify API
-      const response = await fetch(`${API_BASE_URL}/verify`, {
+      const response = await fetch(`${API_BASE_URL}/verif`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
