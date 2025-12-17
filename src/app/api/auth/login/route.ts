@@ -1,40 +1,35 @@
 import { NextResponse } from "next/server";
+import { API_BASE_URL } from "@/config/api";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, password } = body;
 
-    // MOCK: Validasi login sederhana
-    // Di aplikasi nyata, cek DB dan validasi hash password
-    if (password === "wrong") { // Contoh kondisi error
-      return NextResponse.json(
-        { message: "Email atau password salah" },
-        { status: 401 }
-      );
+    const res = await fetch(`${API_BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { message: text };
     }
 
-    // Mock User Data
-    const user = {
-      name: "Pengguna Lokal",
-      email: email || "user@example.com",
-      role: "user",
-    };
+    if (!res.ok) {
+      return NextResponse.json(data, { status: res.status });
+    }
 
-    // Mock Token (Di production gunakan JWT murni)
-    const token = "mock-jwt-token-" + Date.now();
-
-    return NextResponse.json(
-      {
-        message: "Login berhasil",
-        token: token,
-        ...user
-      },
-      { status: 200 }
-    );
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
+    console.error("Login Proxy Error:", error);
     return NextResponse.json(
-      { message: "Terjadi kesalahan server" },
+      { message: "Terjadi kesalahan saat menghubungkan ke server" },
       { status: 500 }
     );
   }

@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 // Konfigurasi transporter email
 // Gunakan environment variables untuk keamanan
 const transporter = nodemailer.createTransport({
-    service: "gmail", // Bisa diganti dengan host SMTP lain
+    service: "smtp.gmail.com", // Bisa diganti dengan host SMTP lain
     auth: {
         user: process.env.EMAIL_USER, // Email pengirim
         pass: process.env.EMAIL_PASS, // App Password (bukan password login biasa)

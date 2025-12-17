@@ -1,35 +1,35 @@
 import { NextResponse } from "next/server";
-import { verifyOTP } from "@/lib/otpStore";
+import { API_BASE_URL } from "@/config/api";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, code } = body;
 
-    if (!email || !code) {
-      return NextResponse.json(
-        { message: "Email dan kode verifikasi diperlukan" },
-        { status: 400 }
-      );
+    const res = await fetch(`${API_BASE_URL}/verify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { message: text };
     }
 
-    const isValid = verifyOTP(email, code);
-
-    if (!isValid) {
-      return NextResponse.json(
-        { message: "Kode verifikasi salah atau kadaluarsa" },
-        { status: 400 }
-      );
+    if (!res.ok) {
+      return NextResponse.json(data, { status: res.status });
     }
 
-    return NextResponse.json(
-      { message: "Verifikasi berhasil" },
-      { status: 200 }
-    );
+    return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    console.error("Verif Error:", error);
+    console.error("Verif Proxy Error:", error);
     return NextResponse.json(
-      { message: "Terjadi kesalahan server" },
+      { message: "Terjadi kesalahan saat menghubungkan ke server" },
       { status: 500 }
     );
   }
