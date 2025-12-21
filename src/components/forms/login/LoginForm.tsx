@@ -1,8 +1,8 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { API_BASE_URL } from "@/config/api";
 import "./LoginForm.css";
 
 export default function LoginForm() {
@@ -10,10 +10,13 @@ export default function LoginForm() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [language, setLanguage] = useState<"id" | "en">("id");
-  const [captchaInput, setCaptchaInput] = useState("");
-  const [captchaCode, setCaptchaCode] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // API Base URL
+  // const API_BASE_URL = "https://api.mizstudio.my.id/api/auth";
 
   // Translations
   const translations = {
@@ -34,7 +37,8 @@ export default function LoginForm() {
       registerLink: "Daftar di sini",
       errorNoAccount: "Belum ada akun. Silakan register dulu.",
       errorInvalid: "NIK/Email atau kata sandi salah",
-      errorCaptcha: "Kode captcha tidak valid"
+      errorServer: "Terjadi kesalahan server. Silakan coba lagi.",
+      errorNetwork: "Tidak dapat terhubung ke server. Periksa koneksi internet Anda."
     },
     en: {
       title: "Sign in to account",
@@ -53,61 +57,53 @@ export default function LoginForm() {
       registerLink: "Sign up here",
       errorNoAccount: "No account found. Please register first.",
       errorInvalid: "Invalid NIK/Email or password",
-      errorCaptcha: "Invalid captcha code"
+      errorServer: "Server error occurred. Please try again.",
+      errorNetwork: "Cannot connect to server. Check your internet connection."
     }
   };
 
   const t = translations[language];
 
-  // Generate captcha on mount
-  useEffect(() => {
-    generateCaptcha();
-  }, []);
 
-  const generateCaptcha = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "";
-    for (let i = 0; i < 6; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setCaptchaCode(code);
-    setCaptchaInput("");
-  };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
-    // Validate captcha
-    if (captchaInput.toUpperCase() !== captchaCode) {
-      setError(t.errorCaptcha);
-      generateCaptcha();
-      return;
-    }
 
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) {
-      setError(t.errorNoAccount);
-      return;
-    }
 
-    const user = JSON.parse(storedUser);
+    try {
+      // Call login API
+      const response = await fetch(`/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: userId, // Backend uses 'email' field for both NIK and Email
+          password: password,
+        }),
+      });
 
-    // Auto-detect if input is email or NIK
-    // Email contains @ symbol, NIK is numeric
-    const isEmail = userId.includes("@");
-    
-    // Check if user ID matches either NIK or Email
-    const isValid = 
-      (isEmail && user.email === userId && user.password === password) ||
-      (!isEmail && user.nik === userId && user.password === password);
+      const data = await response.json();
 
-    if (isValid) {
-      localStorage.setItem("token", "dummy-token");
-      router.push("/dashboard");
-    } else {
-      setError(t.errorInvalid);
-      generateCaptcha();
+      if (response.ok && data.token) {
+        // Store token in sessionStorage (more secure than localStorage)
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("user", JSON.stringify(data));
+
+        // Redirect to landing page
+        router.push("/dashboard");
+      } else {
+        // Handle error response from API
+        setError(data.message || t.errorInvalid);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError(t.errorNetwork);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,109 +121,95 @@ export default function LoginForm() {
 
         {/* Right Side - Form */}
         <div className="login-right">
-        {/* Language Selector */}
-        <div className="language-selector">
-          <button
-            type="button"
-            className={language === "id" ? "active" : ""}
-            onClick={() => setLanguage("id")}
-          >
-            🇮🇩 ID
-          </button>
-          <button
-            type="button"
-            className={language === "en" ? "active" : ""}
-            onClick={() => setLanguage("en")}
-          >
-            🇺🇸 EN
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-header">
-            <div className="form-icon">✱</div>
-            <h2>{t.title}</h2>
-            <p className="form-subtitle">{t.subtitle}</p>
+          {/* Language Selector */}
+          <div className="language-selector">
+            <button
+              type="button"
+              className={language === "id" ? "active" : ""}
+              onClick={() => setLanguage("id")}
+              disabled={loading}
+            >
+              🇮🇩 ID
+            </button>
+            <button
+              type="button"
+              className={language === "en" ? "active" : ""}
+              onClick={() => setLanguage("en")}
+              disabled={loading}
+            >
+              🇺🇸 EN
+            </button>
           </div>
 
-          {/* User ID Input - NIK or Email */}
-          <div className="form-group">
-            <label>{t.idLabel}</label>
-            <input
-              type="text"
-              placeholder={t.idPlaceholder}
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* Password */}
-          <div className="form-group">
-            <label>{t.passwordLabel}</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder={t.passwordPlaceholder}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
-              </button>
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-header">
+              <div className="form-icon">✱</div>
+              <h2>{t.title}</h2>
+              <p className="form-subtitle">{t.subtitle}</p>
             </div>
-          </div>
 
-          {/* Captcha */}
-          <div className="form-group">
-            <label>{t.captchaLabel}</label>
-            <div className="captcha-container">
-              <div className="captcha-display">
-                <span className="captcha-code">{captchaCode}</span>
-                <button
-                  type="button"
-                  className="refresh-captcha"
-                  onClick={generateCaptcha}
-                  title="Refresh"
-                >
-                  🔄
-                </button>
-              </div>
+            {/* User ID Input - NIK or Email */}
+            <div className="form-group">
+              <label>{t.idLabel}</label>
               <input
                 type="text"
-                placeholder={t.captchaPlaceholder}
-                value={captchaInput}
-                onChange={(e) => setCaptchaInput(e.target.value)}
+                placeholder={t.idPlaceholder}
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
-          </div>
 
-          {/* Error Message */}
-          {error && <div className="error-message">{error}</div>}
+            {/* Password */}
+            <div className="form-group">
+              <label>{t.passwordLabel}</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder={t.passwordPlaceholder}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading}
+                >
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
+              </div>
+            </div>
 
-          {/* Forgot Password */}
-          <div className="forgot-password">
-            <Link href="/forgot-password">{t.forgotPassword}</Link>
-          </div>
 
-          {/* Submit Button */}
-          <button type="submit" className="submit-button">
-            {t.loginButton}
-          </button>
 
-          {/* Register Link */}
-          <p className="register-link">
-            {t.newUser}{" "}
-            <Link href="/kategoriRegister">{t.registerLink}</Link>
-          </p>
-        </form>
-      </div>
+            {/* Error Message */}
+            {error && <div className="error-message">{error}</div>}
+
+            {/* Forgot Password */}
+            <div className="forgot-password">
+              <Link href="/forgot-password">{t.forgotPassword}</Link>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="submit-button"
+              disabled={loading}
+            >
+              {loading ? "Loading..." : t.loginButton}
+            </button>
+
+            {/* Register Link */}
+            <p className="register-link">
+              {t.newUser}{" "}
+              <Link href="/register">{t.registerLink}</Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
