@@ -119,8 +119,8 @@ export default function RegisterForm() {
 
 
     try {
-      // Call register API
-      const response = await fetch(`/api/auth/register`, {
+      // Call register API (hosted)
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

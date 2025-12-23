@@ -1,0 +1,39 @@
+.form-grid{
+	display:grid;
+	grid-template-columns:repeat(4, 1fr);
+	gap:16px;
+	color:#0f1720;
+	align-items:start;
+}
+.form-row{display:block}
+.form-row label{display:block;margin-bottom:6px;font-weight:600;color:#0f1720;font-size:0.95rem}
+.form-row input,.form-row select{width:100%;padding:8px 12px;border:1px solid #e6e7ea;border-radius:8px;background:#fff;color:#0f1720;font-size:0.95rem}
+.form-row input::placeholder{color:#64748b}
+.form-row input[type=date]{padding:7px 12px}
+.form-actions{margin-top:16px;grid-column:span 4;text-align:right}
+.btn-primary{background:#0f1720;color:#fff;padding:10px 16px;border-radius:8px;border:none;cursor:pointer}
+.btn-primary:disabled{opacity:0.6;cursor:not-allowed}
+.error{color:#dc2626;font-size:0.9rem;margin-top:6px}
+.stepper{color:#334155;margin-bottom:8px}
+.stepper div div + div{color:#64748b}
+/* make text inside the stat card darker */
+.statCard, .statCard *{color:inherit}
+
+/* Improve contrast for small / muted text */
+small{color:#475569}
+
+/* Ensure the stat card fits the viewport to avoid page scroll */
+.statCard{max-height:calc(100vh - 220px);overflow:auto}
+
+/* Responsive: collapse columns on smaller screens */
+@media (max-width: 1200px){
+	.form-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width: 900px){
+	.form-grid{grid-template-columns:repeat(2,1fr)}
+	.form-actions{grid-column:span 2}
+}
+@media (max-width: 560px){
+	.form-grid{grid-template-columns:1fr}
+	.form-actions{grid-column:span 1}
+}
