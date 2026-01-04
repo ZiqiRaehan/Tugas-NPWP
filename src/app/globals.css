@@ -3,6 +3,46 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* === Design System Tokens (Consistent with Register/Login) === */
+  /* Colors */
+  --color-primary: #1B4B38;
+  --color-primary-hover: #2d7a5a;
+  --color-secondary: #EEF48C;
+  --color-accent: #E9F8DF;
+  --color-white: #FFFFFF;
+
+  --color-text-primary: #1B4B38;
+  --color-text-secondary: #5a7d6d;
+  --color-text-tertiary: #8ba899;
+  --color-background-main: #1B4B38;
+  --color-background-card: #FFFFFF;
+  --color-background-hover: #E9F8DF;
+  --color-border: #E9F8DF;
+  --color-border-focus: #EEF48C;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-lg: 1rem;
+  --space-xl: 1.25rem;
+  --space-2xl: 1.5rem;
+  --space-3xl: 1.75rem;
+  --space-4xl: 2rem;
+
+  /* BorderRadius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(27, 75, 56, 0.1);
+  --shadow-md: 0 4px 6px rgba(27, 75, 56, 0.1);
+  --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 100px rgba(238, 244, 140, 0.15),
+    inset 0 0 0 1px rgba(238, 244, 140, 0.2);
 }
 
 @theme inline {

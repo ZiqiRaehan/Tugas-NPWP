@@ -1,0 +1,188 @@
+.ekonomi-container {
+    padding: 1rem 0;
+    font-family: var(--font-primary, sans-serif);
+}
+
+.ekonomi-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.ekonomi-header h2 {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+/* Main Form Grid */
+.ekonomi-main-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Responsive: Stack on mobile */
+@media (max-width: 768px) {
+    .ekonomi-main-form {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ekonomi-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.ekonomi-form-group label {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.ekonomi-input,
+.ekonomi-select {
+    padding: 0.625rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background-color: white;
+}
+
+/* Table Section */
+.ekonomi-table-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.5rem;
+}
+
+.btn-tambah {
+    background-color: #1e293b;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.ekonomi-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.ekonomi-table th {
+    background-color: #fce7f3;
+    /* Light pinkish/yellowish as in screenshot? Let's use standard yellow/gold from screenshot */
+    background-color: #fcd34d;
+    color: #1e293b;
+    padding: 0.75rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.ekonomi-table td {
+    border-bottom: 1px solid #f1f5f9;
+    padding: 0.75rem;
+    color: #475569;
+}
+
+.empty-state {
+    padding: 1rem;
+    color: #94a3b8;
+    text-align: left;
+    font-style: italic;
+    background-color: #fff9db;
+    /* Light warning bg */
+    border-left: 3px solid #fcd34d;
+}
+
+/* Modal Styles specific to Ekonomi (can reuse shared if refactored, but keeping self-contained) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content.ekonomi-modal {
+    width: 90%;
+    max-width: 800px;
+    background: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.error-banner {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.form-row {
+    margin-bottom: 1rem;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.required-mark {
+    color: #dc2626;
+}
+
+/* Warning/required text below inputs */
+.field-warning {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: inline-block;
+    border-radius: 2px;
+}
+
+.btn-next-action {
+    background-color: #6366f1;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    float: right;
+    margin-top: 2rem;
+    background-color: #64748b;
+    /* Matching previous step style */
+}
