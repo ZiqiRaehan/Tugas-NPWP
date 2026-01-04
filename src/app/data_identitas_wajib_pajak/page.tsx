@@ -6,9 +6,12 @@ import styles from "../dashboard/Dashboard.module.css";
 import "./page.css";
 import FormIdentitas from "@/components/forms/identitas/FormIdentitas";
 import FormKontak from "@/components/forms/kontak/FormKontak";
+import FormOrangTerkait from "@/components/forms/orang_terkait/FormOrangTerkait";
+import FormDataEkonomi from "@/components/forms/ekonomi/FormDataEkonomi";
+import FormAlamat from "@/components/forms/alamat/FormAlamat";
 
 export default function Page() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(4);
   const [loading, setLoading] = useState(true);
 
   // Restore step from session storage
@@ -88,11 +91,15 @@ export default function Page() {
               ))}
             </div>
 
-            {/* Step Content */}
+            {console.log("Rendering Step:", step)}
+
             {step === 1 && <FormIdentitas onNext={next} />}
             {step === 2 && <FormKontak onNext={next} />}
+            {step === 3 && <FormOrangTerkait onNext={next} />}
+            {step === 4 && <FormDataEkonomi onNext={next} />}
+            {step === 5 && <FormAlamat onNext={next} />}
 
-            {step > 2 && (
+            {step > 5 && (
               <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
                 <h3>Tahap {step} belum tersedia</h3>
                 <p>Silakan kembali atau selesaikan tahap sebelumnya.</p>

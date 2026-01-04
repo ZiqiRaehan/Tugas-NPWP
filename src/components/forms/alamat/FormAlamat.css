@@ -1,0 +1,75 @@
+.alamat-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.alamat-header h2 {
+    color: #1B4B38;
+    margin-bottom: 24px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.alamat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row.half {
+    flex-direction: row;
+    gap: 16px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.alamat-input,
+.alamat-select {
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.alamat-input:focus,
+.alamat-select:focus {
+    border-color: #1B4B38;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(27, 75, 56, 0.1);
+}
+
+.btn-next-action {
+    background-color: #1B4B38;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 20px;
+}
+
+.btn-next-action:hover {
+    background-color: #14382a;
+}
