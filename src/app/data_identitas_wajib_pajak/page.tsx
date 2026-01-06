@@ -9,6 +9,8 @@ import FormKontak from "@/components/forms/kontak/FormKontak";
 import FormOrangTerkait from "@/components/forms/orang_terkait/FormOrangTerkait";
 import FormDataEkonomi from "@/components/forms/ekonomi/FormDataEkonomi";
 import FormAlamat from "@/components/forms/alamat/FormAlamat";
+import FormVerifikasiWajah from "@/components/forms/verifikasi_wajah/FormVerifikasiWajah";
+import FormPernyataan from "@/components/forms/pernyataan/FormPernyataan";
 
 export default function Page() {
   const [step, setStep] = useState(4);
@@ -18,8 +20,24 @@ export default function Page() {
   React.useEffect(() => {
     try {
       const savedStep = sessionStorage.getItem("registration_step");
-      if (savedStep) {
+      const currentToken = sessionStorage.getItem("token");
+      const savedToken = sessionStorage.getItem("step_owner_token");
+
+      // Check if token changed (different user)
+      if (currentToken && savedToken && currentToken !== savedToken) {
+        console.log("New user detected, resetting step.");
+        setStep(1);
+        sessionStorage.setItem("registration_step", "1");
+        sessionStorage.setItem("step_owner_token", currentToken);
+      } else if (savedStep) {
         setStep(parseInt(savedStep));
+        // Ensure owner is set if not present
+        if (currentToken && !savedToken) {
+          sessionStorage.setItem("step_owner_token", currentToken);
+        }
+      } else {
+        // First time
+        if (currentToken) sessionStorage.setItem("step_owner_token", currentToken);
       }
     } catch (e) {
       console.error("Failed to load step", e);
@@ -98,12 +116,19 @@ export default function Page() {
             {step === 3 && <FormOrangTerkait onNext={next} />}
             {step === 4 && <FormDataEkonomi onNext={next} />}
             {step === 5 && <FormAlamat onNext={next} />}
+            {step === 6 && <FormVerifikasiWajah onNext={next} />}
+            {step === 7 && <FormPernyataan onNext={next} />}
 
-            {step > 5 && (
+            {step > 7 && (
               <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
-                <h3>Tahap {step} belum tersedia</h3>
-                <p>Silakan kembali atau selesaikan tahap sebelumnya.</p>
-                <button onClick={() => setStep(s => s - 1)} style={{ marginTop: 20, padding: '8px 16px', background: '#1B4B38', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Kembali</button>
+                <h3>Pendaftaran Selesai</h3>
+                <p>Terima kasih telah mendaftar.</p>
+                <button
+                  onClick={() => window.location.href = '/dashboard'}
+                  style={{ marginTop: 20, padding: '8px 16px', background: '#1B4B38', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                  Ke Dashboard
+                </button>
               </div>
             )}
           </div>

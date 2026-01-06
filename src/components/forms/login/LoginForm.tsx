@@ -89,12 +89,35 @@ export default function LoginForm() {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        // Store token in sessionStorage (more secure than localStorage)
+        // Store token in sessionStorage
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("user", JSON.stringify(data));
 
-        // Redirect to landing page
-        router.push("/dashboard");
+        // Determine redirect path based on role
+        let targetPath = "/dashboard";
+
+        try {
+          // Attempt to get role from response or token
+          let role = data.role || data.user?.role;
+
+          // If not in body, try decoding token
+          if (!role && data.token) {
+            const payload = JSON.parse(atob(data.token.split('.')[1]));
+            role = payload.role;
+          }
+
+          // Save role for easier access later
+          if (role) sessionStorage.setItem("role", role);
+
+          if (role === "admin") {
+            targetPath = "/admin";
+          }
+        } catch (e) {
+          console.error("Error parsing role:", e);
+        }
+
+        // Redirect
+        router.push(targetPath);
       } else {
         // Handle error response from API
         setError(data.message || t.errorInvalid);

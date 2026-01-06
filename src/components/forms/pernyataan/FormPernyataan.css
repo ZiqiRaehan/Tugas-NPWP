@@ -1,0 +1,80 @@
+/* FormPernyataan.css */
+
+.pernyataan-container {
+    padding: 30px;
+}
+
+.pernyataan-title {
+    font-size: 1.5rem;
+    color: #1a202c;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.statement-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.checkbox-input {
+    min-width: 20px;
+    width: 20px;
+    height: 20px;
+    margin-top: 4px;
+    cursor: pointer;
+    accent-color: #1B4B38;
+}
+
+.statement-text {
+    font-size: 0.95rem;
+    color: #4a5568;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 32px;
+}
+
+.btn-submit {
+    background-color: #1e293b;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #0f172a;
+}
+
+.btn-submit:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.error-banner {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #fecaca;
+    font-size: 0.9rem;
+}
